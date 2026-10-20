@@ -57,21 +57,16 @@ def _build_requests(n_requests, n_satellites, horizon, rng, max_opps_per_request
     return requests
 
 
-def generate_toy_instance(n_requests=8, n_satellites=2, n_ground_stations=2,
-                           horizon=600.0, seed=42): #valeurs de secours pour un test rapide en ligne de commande
-    """Petite instance jouet, ideale pour deboguer/valider le simulateur avant
-    de passer a des instances plus grandes."""
+# tester rapidement en ligne de commande que le simulateur fonctionne.
+
+def generate_instance(n_requests=8, n_satellites=2, n_ground_stations=2,
+                           horizon=600.0, seed=None): #valeurs de secours pour un test rapide en ligne de commande
+
+    seed = seed if seed is not None else random.randint(0, 10_000)
     rng = random.Random(seed)
     satellites = [Satellite(id=s, memory_capacity=rng.uniform(30, 60),
-                             rotation_speed=2.0, stabilization_time=0.3)
-                  for s in range(n_satellites)]
+                                 rotation_speed=2.0, stabilization_time=0.3)
+                      for s in range(n_satellites)]
     ground_stations = _build_ground_stations(n_ground_stations, n_satellites, horizon, rng)
     requests = _build_requests(n_requests, n_satellites, horizon, rng)
     return requests, satellites, ground_stations, horizon
-
-
-def generate_instance(n_requests, n_satellites, n_ground_stations,horizon=1440.0, seed=None):
-    """Generateur parametrable (tache 8 du sujet). Memes mecanismes que
-    generate_toy_instance, dimensionne pour des instances moyennes/grandes."""
-    seed = seed if seed is not None else random.randint(0, 10_000)
-    return generate_toy_instance(n_requests, n_satellites, n_ground_stations, horizon, seed)
