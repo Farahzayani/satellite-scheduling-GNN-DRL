@@ -3,17 +3,24 @@ instance_generator.py
 -----------------------
 Genere des instances du probleme : requetes, satellites, stations sol, avec
 leurs fenetres de visibilite et de contact (dynamique orbitale SIMPLIFIEE,
-comme demande dans la tache 3 du sujet -- pas de vraie mecanique orbitale).
+pas de vraie mecanique orbitale).
 
-generate_toy_instance()  -> petite instance pour valider le simulateur
-                             (recommande : 1 satellite, 1 station, 5-10 requetes)
-generate_instance()      -> instance parametrable en taille (tache 8 du sujet :
-                             generateur d'instances realistes petites/moyennes/grandes)
+generate_instance()      -> instance parametrable en taille 
 """
 
 import random
 from core.entities import Request, Satellite, GroundStation, VisibilityWindow, ContactWindow
 
+def _build_satellites(n_satellites, rng):
+    satellites = []
+    for s in range(n_satellites):
+        satellites.append(Satellite(
+            id=s,
+            memory_capacity=rng.uniform(30, 60),
+            rotation_speed=rng.uniform(1.5, 3.0),      # desormais variable : satellites plus ou moins agiles
+            stabilization_time=rng.uniform(0.2, 0.5),
+        ))
+    return satellites
 
 def _build_ground_stations(n_ground_stations, n_satellites, horizon, rng):
     ground_stations = []
@@ -64,9 +71,7 @@ def generate_instance(n_requests=8, n_satellites=2, n_ground_stations=2,
 
     seed = seed if seed is not None else random.randint(0, 10_000)
     rng = random.Random(seed)
-    satellites = [Satellite(id=s, memory_capacity=rng.uniform(30, 60),
-                                 rotation_speed=2.0, stabilization_time=0.3)
-                      for s in range(n_satellites)]
+    satellites = _build_satellites (n_satellites, rng)
     ground_stations = _build_ground_stations(n_ground_stations, n_satellites, horizon, rng)
     requests = _build_requests(n_requests, n_satellites, horizon, rng)
     return requests, satellites, ground_stations, horizon
