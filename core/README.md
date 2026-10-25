@@ -14,8 +14,8 @@ These components form the basis of the entire project: the heterogeneous graph r
 | `entities.py` | Defines the core data structures: `Request`, `Satellite`, `GroundStation`, `VisibilityWindow`, and `ContactWindow`. |
 | `instance_generator.py` | Generates complete problem instances, including requests, satellites, ground stations, visibility windows, and contact windows, based on configurable parameters and a random seed. |
 | `simulator.py` | Implements the discrete-event simulation environment (`SatelliteSchedulingEnv`), including state transitions, reward calculation, acquisition feasibility, and downlink operations. |
-| `graph_builder.py` *(planned)* | Constructs the heterogeneous graph representation of a problem instance for the graph neural network. |
-| `instance_splits.py` *(planned)* | Defines the training, validation, and test instance pools, including instance size classes and random seeds. |
+| `graph_builder.py` | Constructs the heterogeneous graph representation of a problem instance for the graph neural network. |
+| `instance_splits.py` | Defines the training, validation, and test instance pools, including instance size classes and random seeds. |
 
 ## `entities.py` — Problem Representation
 
