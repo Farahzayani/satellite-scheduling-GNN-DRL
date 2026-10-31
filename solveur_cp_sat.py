@@ -9,7 +9,7 @@ Deux tests :
   TEST 2 - Ecart des heuristiques (glouton, FCFS) par rapport a cet optimum.
 
 Notes:
-    - Equilibrage de charge E : ton MILP le definit comme une VARIANCE (terme
+    - Equilibrage de charge E : le MILP le definit comme une VARIANCE (terme
     quadratique), difficile a passer directement a CP-SAT sans risquer des
     soucis numeriques. On optimise ici un PROXY LINEAIRE equivalent en
     pratique (ecart max-min de charge entre satellites), puis on recalcule
