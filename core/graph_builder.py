@@ -18,7 +18,8 @@ contact) sont des FEATURES D'ARETE, pas des features de noeud
 import torch
 from torch_geometric.data import HeteroData
 
-# constantes de normalisation (a ajuster si tes instances changent beaucoup d'echelle)
+# constantes de normalisation (a ajuster si les instances changent beaucoup d'echelle)
+#A AMELIORER !!!
 NORM = {
     "priority": 10.0,
     "volume": 5.0,
