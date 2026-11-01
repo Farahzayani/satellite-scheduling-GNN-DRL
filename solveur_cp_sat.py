@@ -18,6 +18,7 @@ Notes:
     """
 
 from ortools.sat.python import cp_model
+import math 
 
 from core.instance_generator import generate_instance
 from core.simulator import SatelliteSchedulingEnv
@@ -61,8 +62,8 @@ def solve_exact(requests, satellites, ground_stations, horizon, weights):
         for o_idx, opp in enumerate(r.opportunities):
             if opp.satellite_id not in sats_by_id:
                 continue
-            vts, vte = round(opp.start * TIME_SCALE), round(opp.end * TIME_SCALE)
-            dur = max(1, round(r.duration * TIME_SCALE))
+            vts, vte = math.ceil(opp.start * TIME_SCALE), math.floor(opp.end * TIME_SCALE)
+            dur = max(1, math.ceil(r.duration * TIME_SCALE))
             if vte - vts < dur:
                 continue
             xv = model.NewBoolVar(f"x_{i}_{o_idx}")

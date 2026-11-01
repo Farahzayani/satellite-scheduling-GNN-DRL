@@ -97,7 +97,7 @@ class SatelliteSchedulingEnv:
                 sat = self.satellites[opp.satellite_id]
                 t_start = self._earliest_start(sat, opp)
                 t_end = t_start + r.duration
-                if t_end > opp.end:
+                if t_end > opp.end + 1e-6:
                     continue                                     # ne rentre pas dans la fenetre de visibilite
                 if sat.memory_used + r.volume > sat.memory_capacity:
                     continue                                      # depasse M_s
@@ -137,7 +137,7 @@ class SatelliteSchedulingEnv:
         t_start = self._earliest_start(sat, opp)
         t_end = t_start + r.duration
 
-        if t_end > opp.end or sat.memory_used + r.volume > sat.memory_capacity:
+        if t_end > opp.end + 1e-6 or sat.memory_used + r.volume > sat.memory_capacity:
             return -1.0     # action invalide 
         
         sat.available_time = t_end
