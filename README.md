@@ -28,18 +28,20 @@ The long-term objective is to investigate whether graph-based reinforcement lear
 
 
 
+```text
 🗂️ project_root/
 ├── 📁 core/
 │   ├── 📄 README.md
 │   ├── 📄 entities.py              # Core data structures (Request, Satellite, GroundStation...)
-│   ├── 📄 instance_generator.py    # Parametric instance generator 
+│   ├── 📄 instance_generator.py    # Parametric instance generator
 │   ├── 📄 instance_splits.py       # Train / validation / test splits, per size class
 │   ├── 📄 simulator.py             # Discrete-event simulator (transition and reward functions)
 │   └── 📄 graph_builder.py         # Heterogeneous graph construction from the simulator state
-├── 📁heuristics/
+├── 📁 heuristics/
 │   └── 📄 baselines.py             # Reference heuristic policies (Greedy, FCFS, Random)
-├── 📄 solveur_cp_sat.py        # Exact solver (OR-Tools CP-SAT) and simulator validation
-├── 📄 experiments.py           # CP-SAT vs. heuristics comparison
+├── 📄 solveur_cp_sat.py            # Exact solver (OR-Tools CP-SAT) and simulator validation
+├── 📄 experiments.py               # CP-SAT vs. heuristics comparison
 ├── 📄 .gitignore
 ├── 📄 LICENSE
 └── 📄 README.md
+```
