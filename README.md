@@ -25,3 +25,21 @@ The proposed approach combines several components:
 - A **comparative evaluation framework** using exact optimization and heuristic baselines, including Greedy, First-Come First-Served (FCFS), and Random policies.
 
 The long-term objective is to investigate whether graph-based reinforcement learning can produce high-quality feasible schedules while generalizing across instances of different sizes and characteristics.
+
+
+
+🗂️ project_root/
+├── 📁 core/
+│   ├── 📄 README.md
+│   ├── 📄 entities.py              # Core data structures (Request, Satellite, GroundStation...)
+│   ├── 📄 instance_generator.py    # Parametric instance generator 
+│   ├── 📄 instance_splits.py       # Train / validation / test splits, per size class
+│   ├── 📄 simulator.py             # Discrete-event simulator (transition and reward functions)
+│   └── 📄 graph_builder.py         # Heterogeneous graph construction from the simulator state
+├── 📁heuristics/
+│   └── 📄 baselines.py             # Reference heuristic policies (Greedy, FCFS, Random)
+├── 📄 solveur_cp_sat.py        # Exact solver (OR-Tools CP-SAT) and simulator validation
+├── 📄 experiments.py           # CP-SAT vs. heuristics comparison
+├── 📄 .gitignore
+├── 📄 LICENSE
+└── 📄 README.md
