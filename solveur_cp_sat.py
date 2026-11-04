@@ -26,10 +26,10 @@ from heuristics.baselines import greedy_priority_policy, fcfs_policy, run_episod
 
 # ============ PARAMETRES A MODIFIER LIBREMENT ============
 SEED = 7
-N_REQUESTS = 12
-N_SATELLITES = 2
+N_REQUESTS = 20
+N_SATELLITES =3
 N_GROUND_STATIONS = 2
-HORIZON = 600.0
+HORIZON = 900.0
 WEIGHTS = (1.0, 0.05, 0.3)      # (alpha1 profit, alpha2 delai, alpha3 equilibrage)
 # ===========================================================
 
