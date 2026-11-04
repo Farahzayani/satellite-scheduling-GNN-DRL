@@ -39,6 +39,8 @@ The long-term objective is to investigate whether graph-based reinforcement lear
 │   └── 📄 graph_builder.py         # Heterogeneous graph construction from the simulator state
 ├── 📁 heuristics/
 │   └── 📄 baselines.py             # Reference heuristic policies (Greedy, FCFS, Random)
+├── 📁 models/
+│   └── 📄 gnn_encoder.py           # GATv2-based encoder (HeteroGATEncoder, ActionScorer)
 ├── 📄 solveur_cp_sat.py            # Exact solver (OR-Tools CP-SAT) and simulator validation
 ├── 📄 experiments.py               # CP-SAT vs. heuristics comparison
 ├── 📄 .gitignore
