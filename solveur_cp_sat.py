@@ -40,6 +40,11 @@ VOL_SCALE = 10        # resolution 1/VOL_SCALE Go pour les volumes/memoire
 def _transition_ticks(sat, opp_i, opp_j):
     minutes = abs(opp_j.pointing_angle - opp_i.pointing_angle) / sat.rotation_speed + sat.stabilization_time
     return max(0, round(minutes * TIME_SCALE))
+def _transition_ticks_from_rest(sat, opp):
+    """Temps de depointage depuis l'angle de repos initial (0 degre) vers la
+    premiere opportunite choisie -- symetrique a _earliest_start() du simulateur."""
+    minutes = abs(opp.pointing_angle - 0.0) / sat.rotation_speed + sat.stabilization_time
+    return max(0, math.ceil(minutes * TIME_SCALE))
 
 
 def solve_exact(requests, satellites, ground_stations, horizon, weights):
@@ -62,6 +67,7 @@ def solve_exact(requests, satellites, ground_stations, horizon, weights):
         for o_idx, opp in enumerate(r.opportunities):
             if opp.satellite_id not in sats_by_id:
                 continue
+            sat = sats_by_id[opp.satellite_id]
             vts, vte = math.ceil(opp.start * TIME_SCALE), math.floor(opp.end * TIME_SCALE)
             dur = max(1, math.ceil(r.duration * TIME_SCALE))
             if vte - vts < dur:
@@ -75,6 +81,7 @@ def solve_exact(requests, satellites, ground_stations, horizon, weights):
             x[(i, o_idx)] = xv
             start_v[(i, o_idx)], end_v[(i, o_idx)], interval_v[(i, o_idx)] = s_i, e_i, ivar
             intervals_by_satellite[opp.satellite_id].append(((i, o_idx), ivar))
+            model.Add(start_v[(i, o_idx)] >= _transition_ticks_from_rest(sat, opp)).OnlyEnforceIf(xv)
             model.Add(acq_end[i] == e_i).OnlyEnforceIf(xv)
             opts.append(xv)
         acquired[i] = model.NewBoolVar(f"acquired_{i}")
