@@ -119,8 +119,8 @@ class DQNAgent:
     # ------------------------------------------------------------------
     # UNE ETAPE D'ENTRAINEMENT (sur un mini-batch echantillonne du buffer)
     # ------------------------------------------------------------------
-    def train_step(self, batch_size=32):
-        if len(self.buffer) < batch_size:
+    def train_step(self, batch_size=32,min_buffer_size=500):
+        if len(self.buffer) < min_buffer_size:
             return None
         batch = self.buffer.sample(batch_size, self.rng)
         self.optimizer.zero_grad()
