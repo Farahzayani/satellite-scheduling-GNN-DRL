@@ -32,7 +32,7 @@ CLASSE = "S"                     # classe de taille utilisee pour cette phase d'
 WEIGHTS = (1.0, 0.05, 0.3)
 
 N_EPISODES = 400
-EPSILON_START, EPSILON_END, EPSILON_DECAY = 1.0, 0.05, 0.998
+EPSILON_START, EPSILON_END, EPSILON_DECAY = 1.0, 0.05, 0.05 ** (1 / N_EPISODES)
 BATCH_SIZE = 32
 EVAL_EVERY = 50
 
