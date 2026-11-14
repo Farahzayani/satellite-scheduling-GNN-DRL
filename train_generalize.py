@@ -31,7 +31,7 @@ from double_dqn_agent import DQNAgent
 CLASSE = "S"                     # classe de taille utilisee pour cette phase d'entrainement
 WEIGHTS = (1.0, 0.05, 0.3)
 
-N_EPISODES = 600
+N_EPISODES = 400
 EPSILON_START, EPSILON_END, EPSILON_DECAY = 1.0, 0.05, 0.998
 BATCH_SIZE = 32
 EVAL_EVERY = 50
@@ -43,7 +43,7 @@ def make_env(seed, classe=CLASSE):
         n_requests=params["n_requests"], n_satellites=params["n_satellites"],
         n_ground_stations=params["n_ground_stations"], horizon=params["horizon"], seed=seed)
     return SatelliteSchedulingEnv(requests, satellites, ground_stations, horizon,
-                                   weights=WEIGHTS, seed=seed)
+                                   weights=WEIGHTS, seed=seed,max_steps=50)
 
 
 
@@ -97,9 +97,9 @@ if __name__ == "__main__":
             if action[0] == "acquire":
                 agent.remember(graph_before, action, reward, env, done)
 
-            t = time.time()
-            agent.train_step(BATCH_SIZE)
-            time_train += time.time() - t
+                t = time.time()
+                agent.train_step(BATCH_SIZE)
+                time_train += time.time() - t
 
             n_steps += 1
 
@@ -152,7 +152,7 @@ if __name__ == "__main__":
     plt.plot(episodes, rewards, color="tab:blue", label=f"Recompense de validation (moyenne sur {len(VAL_SEEDS)} instances)")
     plt.xlabel("Episode")
     plt.ylabel("Recompense moyenne (validation, epsilon=0)")
-    plt.title(f"Courbe de generalisation DQN -- classe {CLASSE}")
+    plt.title(f"Courbe de generalisation Double_DQN -- classe {CLASSE}")
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()

@@ -190,7 +190,7 @@ def solve_exact(requests, satellites, ground_stations, horizon, weights):
     w3 = round(alpha3 * OBJ_SCALE / VOL_SCALE)
     priorities = {r.id: r.priority for r in requests}
     objective = (sum(w1 * priorities[i] * acquired[i] for i in acquired)
-                 - sum(w2 * delay[i] for i in delay)
+                 - sum(w2 * delay[i] * priorities[i] for i in delay)
                  - w3 * (max_load - min_load))
     model.Maximize(objective)
 

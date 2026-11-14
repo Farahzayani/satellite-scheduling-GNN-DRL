@@ -188,7 +188,7 @@ class SatelliteSchedulingEnv:
                     cursor = dl_end
 
                     w_i = r.t_downlink - r.t_end                             # attente + V_i/B_g
-                    reward += -self.alpha2 * w_i
+                    reward += -self.alpha2 * r.priority * w_i
                     self.plan.append({"type": "downlink", "request": rid, "station": g.id,
                                        "t_start": dl_start, "t_end": dl_end, "delay": w_i})
                 self._contact_cursor[key] = cursor
