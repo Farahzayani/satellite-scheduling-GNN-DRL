@@ -115,25 +115,25 @@ if __name__ == "__main__":
 
         epsilon = max(EPSILON_END, epsilon * EPSILON_DECAY)
 
-        #if episode % EVAL_EVERY == 0:
+        if episode % EVAL_EVERY == 0:
 
-        t_eval = time.time()
+            t_eval = time.time()
 
-        val_reward = evaluate_on_seeds(agent, VAL_SEEDS)
+            val_reward = evaluate_on_seeds(agent, VAL_SEEDS)
 
-        eval_time = time.time() - t_eval
-        val_history.append((episode, val_reward))
-        print(f"episode {episode:5d}  epsilon={epsilon:.3f}  "
-                  f"reward(val, moyenne sur {len(VAL_SEEDS)} instances)={val_reward:.2f}  "
-                  f"best={max(best_val, val_reward):.2f}")
-        print(
-                f"VALIDATION episode {episode} | "
-                f"time={eval_time:.2f}s | "
-                f"reward={val_reward:.2f}"
-            )
-        if val_reward > best_val:
-            best_val = val_reward
-            torch.save(agent.online.state_dict(), f"best_dqn_{CLASSE}.pt")
+            eval_time = time.time() - t_eval
+            val_history.append((episode, val_reward))
+            print(f"episode {episode:5d}  epsilon={epsilon:.3f}  "
+                    f"reward(val, moyenne sur {len(VAL_SEEDS)} instances)={val_reward:.2f}  "
+                    f"best={max(best_val, val_reward):.2f}")
+            print(
+                    f"VALIDATION episode {episode} | "
+                    f"time={eval_time:.2f}s | "
+                    f"reward={val_reward:.2f}"
+                )
+            if val_reward > best_val:
+                best_val = val_reward
+                torch.save(agent.online.state_dict(), f"best_dqn_{CLASSE}.pt")
 
     print(f"\nMeilleure recompense de validation obtenue : {best_val:.2f}")
     print(f"Poids sauvegardes dans best_dqn_{CLASSE}.pt")
