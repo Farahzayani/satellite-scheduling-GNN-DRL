@@ -31,7 +31,7 @@ from double_dqn_agent import DQNAgent
 CLASSE = "S"                     # classe de taille utilisee pour cette phase d'entrainement
 WEIGHTS = (1.0, 0.05, 0.3)
 
-N_EPISODES = 400
+N_EPISODES = 1200 
 EPSILON_START, EPSILON_END, EPSILON_DECAY = 1.0, 0.05, 0.05 ** (1 / N_EPISODES)
 BATCH_SIZE = 32
 EVAL_EVERY = 50
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     agent = DQNAgent(seed=0)
     epsilon = EPSILON_START
     best_val = -float("inf")
-    val_history = []   # (episode, reward_validation) -- pour la courbe
+    val_history_1 = []   # (episode, reward_validation) -- pour la courbe
 
     for episode in range(1, N_EPISODES + 1):
         t_episode = time.time()
@@ -122,7 +122,7 @@ if __name__ == "__main__":
             val_reward = evaluate_on_seeds(agent, VAL_SEEDS)
 
             eval_time = time.time() - t_eval
-            val_history.append((episode, val_reward))
+            val_history_1.append((episode, val_reward))
             print(f"episode {episode:5d}  epsilon={epsilon:.3f}  "
                     f"reward(val, moyenne sur {len(VAL_SEEDS)} instances)={val_reward:.2f}  "
                     f"best={max(best_val, val_reward):.2f}")
@@ -133,20 +133,20 @@ if __name__ == "__main__":
                 )
             if val_reward > best_val:
                 best_val = val_reward
-                torch.save(agent.online.state_dict(), f"best_dqn_{CLASSE}.pt")
+                torch.save(agent.online.state_dict(), f"best_dqn_1_{CLASSE}.pt")
 
     print(f"\nMeilleure recompense de validation obtenue : {best_val:.2f}")
     print(f"Poids sauvegardes dans best_dqn_{CLASSE}.pt")
 
     # --- sauvegarde CSV (pour comparer plus tard avec d'autres variantes/classes) ---
-    with open(f"val_history_{CLASSE}.csv", "w", newline="") as f:
+    with open(f"val_history_1_{CLASSE}.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["episode", "reward_val"])
-        writer.writerows(val_history)
+        writer.writerows(val_history_1)
 
     # --- courbe de generalisation ---
-    episodes = [e for e, _ in val_history]
-    rewards = [r for _, r in val_history]
+    episodes = [e for e, _ in val_history_1]
+    rewards = [r for _, r in val_history_1]
 
     plt.figure(figsize=(9, 5))
     plt.plot(episodes, rewards, color="tab:blue", label=f"Recompense de validation (moyenne sur {len(VAL_SEEDS)} instances)")
@@ -156,5 +156,5 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"dqn_generalization_curve_{CLASSE}.png", dpi=150)
+    plt.savefig(f"dqn_generalization_{CLASSE}.png", dpi=150)
     plt.show()

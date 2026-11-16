@@ -15,7 +15,7 @@ TAILLE_CLASSES = {
 }
 
 # --- seeds d'entrainement ---
-TRAIN_SEEDS = list(range(0, 20))          # 100 instances d'entrainement
+TRAIN_SEEDS = list(range(0, 80))          # 100 instances d'entrainement
 
 # --- seeds de validation ---
 VAL_SEEDS = list(range(100, 110))          # 10 instances de validation
