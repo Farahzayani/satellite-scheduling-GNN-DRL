@@ -46,7 +46,7 @@ def run_episode(env, policy_fn, rng=None, verbose=False):
 
 #vérification pour récompense négative 
 from core.instance_generator import generate_instance
-from core.simulator import SatelliteSchedulingEnv
+from simulator.simulator import SatelliteSchedulingEnv
 
 requests, satellites, ground_stations, horizon = generate_instance(
     n_requests=12, n_satellites=2, n_ground_stations=2, horizon=600.0, seed=7)
