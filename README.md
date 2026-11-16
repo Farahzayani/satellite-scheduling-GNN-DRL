@@ -35,12 +35,19 @@ The long-term objective is to investigate whether graph-based reinforcement lear
 │   ├── 📄 entities.py              # Core data structures (Request, Satellite, GroundStation...)
 │   ├── 📄 instance_generator.py    # Parametric instance generator
 │   ├── 📄 instance_splits.py       # Train / validation / test splits, per size class
-│   ├── 📄 simulator.py             # Discrete-event simulator (transition and reward functions)
 │   └── 📄 graph_builder.py         # Heterogeneous graph construction from the simulator state
 ├── 📁 heuristics/
 │   └── 📄 baselines.py             # Reference heuristic policies (Greedy, FCFS, Random)
 ├── 📁 models/
-│   └── 📄 gnn_encoder.py           # GATv2-based encoder (HeteroGATEncoder, ActionScorer)
+│   ├── 📄 gnn_encoder.py           # GATv2-based encoder (HeteroGATEncoder, ActionScorer)
+|   ├── 📄 dqn_agent.py             
+|   ├── 📄 double_dqn_agent.py      
+├── 📁 simulator/
+|   ├── 📄 simulator.py             # Discrete-event simulator (transition and reward functions)
+├── 📁 train/
+|   ├── 📄 train_dqn.py             
+|   ├── 📄 train_double_dqn.py             
+|   ├── 📄 train_generalize.py      # Train choosen agent with different classes 
 ├── 📄 solveur_cp_sat.py            # Exact solver (OR-Tools CP-SAT) and simulator validation
 ├── 📄 experiments.py               # CP-SAT vs. heuristics comparison
 ├── 📄 .gitignore
