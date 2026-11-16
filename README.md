@@ -41,7 +41,9 @@ The long-term objective is to investigate whether graph-based reinforcement lear
 ├── 📁 models/
 │   ├── 📄 gnn_encoder.py           # GATv2-based encoder (HeteroGATEncoder, ActionScorer)
 |   ├── 📄 dqn_agent.py             
-|   ├── 📄 double_dqn_agent.py      
+|   ├── 📄 double_dqn_agent.py
+├── 📁 references/
+|   ├── 📄 refenrences.bib          # Zotero Bibliography (all references used in the state of art)
 ├── 📁 simulator/
 |   ├── 📄 simulator.py             # Discrete-event simulator (transition and reward functions)
 ├── 📁 train/
