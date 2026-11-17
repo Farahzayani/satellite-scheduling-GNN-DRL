@@ -22,8 +22,7 @@ from simulator.simulator import SatelliteSchedulingEnv
 
 
 def replay_plan(requests, satellites, ground_stations, horizon, weights, seed, plan):
-    """Rejoue un plan (liste de dicts {request, satellite, opp_index}, dans
-    l'ordre fourni) dans un nouvel environnement."""
+    #Rejoue un plan (liste de dicts {request, satellite, opp_index}, dans l'ordre fourni) dans un nouvel environnement
     env = SatelliteSchedulingEnv(requests, satellites, ground_stations, horizon,
                                   weights=weights, seed=seed)
     env.reset()
@@ -36,8 +35,7 @@ def replay_plan(requests, satellites, ground_stations, horizon, weights, seed, p
 
 
 def get_agent_plan(agent, requests, satellites, ground_stations, horizon, weights, seed):
-    """Fait jouer l'agent (politique gloutonne, epsilon=0) sur l'instance et
-    enregistre le plan obtenu, dans l'ordre chronologique d'execution."""
+    #Fait jouer l'agent (politique gloutonne, epsilon=0) sur l'instance et enregistre le plan obtenu
     env = SatelliteSchedulingEnv(requests, satellites, ground_stations, horizon,
                                   weights=weights, seed=seed)
     env.reset()
@@ -53,8 +51,7 @@ def get_agent_plan(agent, requests, satellites, ground_stations, horizon, weight
 
 def reorder_within_satellite(requests, satellites, ground_stations, horizon, weights, seed,
                               plan, rng, n_tries=30):
-    """Operateur 1 : echange l'ordre de deux acquisitions d'un meme satellite,
-    accepte si la recompense totale s'ameliore."""
+    #Operateur 1 : echange l'ordre de deux acquisitions d'un meme satellite, accepte si la recompense totale s'ameliore
     best_plan = copy.deepcopy(plan)
     best_reward = replay_plan(requests, satellites, ground_stations, horizon, weights, seed, best_plan).total_reward
 
@@ -80,10 +77,8 @@ def reorder_within_satellite(requests, satellites, ground_stations, horizon, wei
 
 def swap_between_satellites(requests, satellites, ground_stations, horizon, weights, seed,
                              plan, rng, n_tries=30):
-    """Operateur 2 : echange l'affectation satellite de deux requetes du plan,
-    si chacune possede une opportunite sur le satellite de l'autre, accepte
-    si la recompense totale s'ameliore (typiquement via un meilleur
-    equilibrage de charge)."""
+    #Operateur 2 : echange l'affectation satellite de deux requetes du plan,
+    #si chacune possede une opportunite sur le satellite de l'autre, accepte si la recompense totale s'ameliore
     requests_by_id = {r.id: r for r in requests}
     best_plan = copy.deepcopy(plan)
     best_reward = replay_plan(requests, satellites, ground_stations, horizon, weights, seed, best_plan).total_reward
@@ -115,9 +110,8 @@ def swap_between_satellites(requests, satellites, ground_stations, horizon, weig
 
 
 def greedy_insert_unplanned(requests, satellites, ground_stations, horizon, weights, seed, plan):
-    """Operateur 3 : tente d'inserer, par priorite decroissante, chaque
-    requete laissee non planifiee par l'agent, dans la premiere opportunite
-    qui reste realisable et ameliore la recompense."""
+    #Operateur 3 : tente d'inserer, par priorite decroissante, chaque requete laissée non planifiee par l'agent,
+    #dans la premiere opportunite qui reste realisable et ameliore la récompense
     planned_ids = {e["request"] for e in plan}
     leftover = sorted((r for r in requests if r.id not in planned_ids), key=lambda r: -r.priority)
 
@@ -136,9 +130,8 @@ def greedy_insert_unplanned(requests, satellites, ground_stations, horizon, weig
 
 
 def improve_plan(agent, requests, satellites, ground_stations, horizon, weights, seed, rng_seed=0):
-    """Pipeline complet : plan initial de l'agent, puis application
-    sequentielle des trois operateurs. Affiche la progression de la
-    recompense apres chaque operateur, pour analyse (chapitre 5)."""
+    #Pipeline complet : plan initial de l'agent, puis application sequentielle des trois operateurs. Affiche la progression de la
+    #recompense apres chaque operateur, pour analyse
     rng = random.Random(rng_seed)
     plan, reward0 = get_agent_plan(agent, requests, satellites, ground_stations, horizon, weights, seed)
     print(f"Recompense agent seul              : {reward0:.2f}")

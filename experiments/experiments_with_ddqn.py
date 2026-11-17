@@ -23,7 +23,7 @@ from heuristics.baselines import greedy_priority_policy, fcfs_policy, random_pol
 from solveur_cp_sat import solve_exact
 from models.dqn_agent import DQNAgent
 
-CLASSE = "S"
+CLASSE = "M"
 WEIGHTS = (1.0, 0.05, 0.3)
 
 
@@ -66,7 +66,7 @@ def gap_pct(reward, reward_cp_sat):
 
 if __name__ == "__main__":
     agent = DQNAgent(seed=0)
-    agent.online.load_state_dict(torch.load(f"best_dqn_{CLASSE}.pt"))
+    #agent.online.load_state_dict(torch.load(f"best_dqn_{CLASSE}.pt"))
     agent.online.eval()
 
     rows = []   # une ligne par instance de test -- future "Table A.1"
