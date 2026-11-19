@@ -11,11 +11,11 @@ des instances plus grandes une fois le pipeline S valide.
 TAILLE_CLASSES = {
     "S": dict(n_requests=10, n_satellites=2, n_ground_stations=2, horizon=600.0),
     "M": dict(n_requests=20, n_satellites=3, n_ground_stations=2, horizon=900.0),
-    # "L": dict(n_requests=50, n_satellites=4, n_ground_stations=3, horizon=1440.0),
+    "L": dict(n_requests=50, n_satellites=4, n_ground_stations=3, horizon=1440.0),
 }
 
 # --- seeds d'entrainement ---
-TRAIN_SEEDS = list(range(0, 80))          # 100 instances d'entrainement
+TRAIN_SEEDS = list(range(0, 100))          # 100 instances d'entrainement
 
 # --- seeds de validation ---
 VAL_SEEDS = list(range(100, 110))          # 10 instances de validation
