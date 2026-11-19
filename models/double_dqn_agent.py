@@ -60,7 +60,7 @@ class ReplayBuffer:
         return len(self.buffer)
 
 
-class DQNAgent:
+class DDQNAgent:
     def __init__(self, hidden_dim=32, heads=4, n_layers=2, lr=1e-3, gamma=0.99,
                  buffer_capacity=20000, target_update_every=200, seed=0):
         self.online = DQNNet(hidden_dim, heads, n_layers)
