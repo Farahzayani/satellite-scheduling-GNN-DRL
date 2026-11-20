@@ -100,7 +100,7 @@ if __name__ == "__main__":
               f"FCFS={r_fcfs:7.2f} ({row['fcfs_gap_pct']:+6.2f}%)")
 
     # --- sauvegarde du detail par instance (Etape 3, futur Table A.1) ---
-    with open(f"detailed_results_{CLASSE}.csv", "w", newline="") as f:
+    with open(f"detailed_results_1_{CLASSE}.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
@@ -129,7 +129,7 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(alpha=0.3, axis="y")
     plt.tight_layout()
-    plt.savefig(f"boxplot_gap_{CLASSE}.png", dpi=150)
+    plt.savefig(f"boxplot_gap_1_{CLASSE}.png", dpi=150)
     plt.show()
 
     # -----------------------------------------------------------
@@ -148,5 +148,5 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"comparison_per_instance_{CLASSE}.png", dpi=150)
+    plt.savefig(f"comparison_per_instance_1_{CLASSE}.png", dpi=150)
     plt.show()
