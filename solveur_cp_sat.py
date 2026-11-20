@@ -111,17 +111,10 @@ def solve_exact(requests, satellites, ground_stations, horizon, weights):
                 model.Add(start_v[(i, oi)] >= end_v[(j, oj)] + trans_ji).OnlyEnforceIf(
                     [order.Not(), x[(i, oi)], x[(j, oj)]])
 
-    # --- contrainte 5 : memoire, PAR SATELLITE ---
-    for sid, sat in sats_by_id.items():
-        terms = [max(1, round(requests_by_id[i].volume * VOL_SCALE)) * xv
-                 for (i, o_idx), xv in x.items()
-                 if requests_by_id[i].opportunities[o_idx].satellite_id == sid]
-        if terms:
-            model.Add(sum(terms) <= round(sat.memory_capacity * VOL_SCALE))
-
     # --- downlink : contraintes 6 (unicite) et 7 (capacite de contact) ---
     delta, dl_start_v, dl_end_v = {}, {}, {}
     by_window = {}
+    contact_satellite = {}
     for r in requests:
         i = r.id
         my_sat_ids = {requests_by_id[i].opportunities[o_idx].satellite_id
@@ -148,14 +141,62 @@ def solve_exact(requests, satellites, ground_stations, horizon, weights):
                 if matching_x:
                     model.Add(d_ik <= sum(matching_x))
                 delta[key] = d_ik
+                contact_satellite[key] = c.satellite_id
                 dl_start_v[key], dl_end_v[key] = s_ik, e_ik
                 entries_i.append(d_ik)
-                by_window.setdefault((g.id, k), []).append(ivar)
+                by_window.setdefault(g.id, []).append(ivar)
         model.Add(sum(entries_i) == acquired[i])                 # contrainte 6
 
-    for ivals in by_window.values():
+    for g_id,ivals in by_window.items():
         model.AddNoOverlap(ivals)                                    # contrainte 7 (partage temporel du canal)
 
+# --- contrainte 5 : mémoire dynamique, PAR SATELLITE ---
+
+    memory_intervals = {sid: [] for sid in sats_by_id}
+    for r in requests:
+        i = r.id
+
+        for sid, sat in sats_by_id.items():
+            # Variable indiquant si la requête est acquise par ce satellite
+            sat_x = [ xv for (ii, o_idx), xv in x.items() if ii == i and requests_by_id[ii].opportunities[o_idx].satellite_id == sid]
+            presence = model.NewBoolVar(f"mem_presence_{i}_{sid}")
+            if sat_x:
+                model.Add(presence == sum(sat_x))
+            else:
+                model.Add(presence == 0)
+
+            # Téléchargements possibles pour cette requête et ce satellite
+            sat_dl_keys = [key for key in delta if key[0] == i and contact_satellite[key] == sid]
+            # Instant de libération de la mémoire : fin du téléchargement
+            dl_end_sat = model.NewIntVar(0, BIG_TIME, f"mem_dl_end_{i}_{sid}")
+            for key in sat_dl_keys:
+                model.Add(dl_end_sat == dl_end_v[key]).OnlyEnforceIf(delta[key])
+
+            # Durée pendant laquelle les données occupent la mémoire
+            mem_duration = model.NewIntVar( 0, BIG_TIME, f"mem_duration_{i}_{sid}")
+            model.Add(mem_duration == dl_end_sat - acq_end[i]).OnlyEnforceIf(presence)
+
+            # Intervalle d'occupation mémoire :
+            # de la fin de l'acquisition à la fin du téléchargement
+            mem_interval = model.NewOptionalIntervalVar(
+                acq_end[i],
+                mem_duration,
+                dl_end_sat,
+                presence,
+                f"memory_{i}_{sid}"
+            )
+
+            volume = max(1, round(r.volume * VOL_SCALE))
+            memory_intervals[sid].append((mem_interval, volume))
+
+
+    # Capacité mémoire à respecter à chaque instant
+    for sid, entries in memory_intervals.items():
+        if entries:
+            intervals = [iv for iv, vol in entries]
+            demands = [vol for iv, vol in entries]
+            model.AddCumulative( intervals,demands, round(sats_by_id[sid].memory_capacity * VOL_SCALE))
+            
     # --- delai de restitution w_i ---
     delay = {}
     for r in requests:
@@ -235,7 +276,7 @@ def solve_exact(requests, satellites, ground_stations, horizon, weights):
     result["loads_by_satellite"] = loads_real
 
     profit = sum(e["priority"] for e in result["plan"])
-    delay_sum = sum(e["delay"] for e in result["plan"])
+    delay_sum = sum(e["priority"] * e["delay"] for e in result["plan"])
     result["objective_real"] = alpha1 * profit - alpha2 * delay_sum - alpha3 * true_E
 
     # --- GAP ---
