@@ -1,13 +1,13 @@
 
 from core.instance_generator import generate_instance
 from simulator.simulator import SatelliteSchedulingEnv
-from models.double_dqn_agent import DQNAgent
+from models.double_dqn_agent import DDQNAgent
 from heuristics.baselines import greedy_priority_policy, fcfs_policy, random_policy, run_episode
 
 import matplotlib.pyplot as plt
 import csv
 
-# Parametres de l'instance (a aligner avec vos autres scripts de demo)
+# Parametres de l'instance 
 N_REQUESTS = 20
 N_SATELLITES = 3
 N_GROUND_STATIONS = 2
@@ -48,7 +48,7 @@ def evaluate_agent(agent, seed):
 
 
 if __name__ == "__main__":
-    agent = DQNAgent(seed=0)
+    agent = DDQNAgent(seed=0)
     epsilon = EPSILON_START
 
     # baselines de reference, calcules une seule fois sur l'instance d'entrainement

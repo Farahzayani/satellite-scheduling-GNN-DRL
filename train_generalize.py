@@ -133,13 +133,13 @@ if __name__ == "__main__":
                 )
             if val_reward > best_val:
                 best_val = val_reward
-                torch.save(agent.online.state_dict(), f"best_DDQN_{CLASSE}.pt")
+                torch.save(agent.online.state_dict(), f"best_DDQN_1_{CLASSE}.pt")
 
     print(f"\nMeilleure recompense de validation obtenue : {best_val:.2f}")
-    print(f"Poids sauvegardes dans best_DDQN_{CLASSE}.pt")
+    print(f"Poids sauvegardes dans best_DDQN_1_{CLASSE}.pt")
 
     # --- sauvegarde CSV (pour comparer plus tard avec d'autres variantes/classes) ---
-    with open(f"history_{CLASSE}.csv", "w", newline="") as f:
+    with open(f"history_1_{CLASSE}.csv", "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow(["episode", "reward_val"])
         writer.writerows(history)
@@ -152,9 +152,9 @@ if __name__ == "__main__":
     plt.plot(episodes, rewards, color="tab:blue", label=f"Recompense de validation (moyenne sur {len(VAL_SEEDS)} instances)")
     plt.xlabel("Episode")
     plt.ylabel("Recompense moyenne (validation, epsilon=0)")
-    plt.title(f"Courbe de generalisation Double_DQN -- classe {CLASSE}")
+    plt.title(f"Courbe de generalisation Double_DQN - classe {CLASSE}")
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"DDQN_generalization_{CLASSE}.png", dpi=150)
+    plt.savefig(f"DDQN_generalization_1_{CLASSE}.png", dpi=150)
     plt.show()

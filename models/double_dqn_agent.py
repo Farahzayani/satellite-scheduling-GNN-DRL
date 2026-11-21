@@ -138,7 +138,7 @@ class DDQNAgent:
                     target_next_scores = self.target.score_pairs(tr.next_graph, tr.next_valid_pairs)
                     target = tr.reward + self.gamma * target_next_scores[best_next_idx]
 
-            losses.append(F.smooth_l1_loss(q_sa, target))
+            losses.append(F.smooth_l1_loss(q_sa, target))   #Huber Loss (Smooth L1 Loss) 
 
         loss = torch.stack(losses).mean()
         loss.backward()
