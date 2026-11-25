@@ -21,6 +21,7 @@ from simulator.simulator import SatelliteSchedulingEnv
 from heuristics.baselines import greedy_priority_policy, fcfs_policy, random_policy, run_episode
 from solveur_cp_sat import solve_exact
 from models.double_dqn_agent import DDQNAgent 
+from heuristics.alns import ALNS
 
 CLASSE = "S"
 WEIGHTS = (1.0, 0.05, 0.3)
@@ -53,6 +54,19 @@ def evaluate_heuristic(requests, satellites, ground_stations, horizon, seed, pol
         run_episode(env, policy)
     return env.total_reward
 
+def evaluate_alns(requests, satellites, ground_stations, horizon, seed):
+    alns = ALNS(
+        requests,
+        satellites,
+        ground_stations,
+        horizon,
+        iterations=200,
+        seed=seed
+    )
+
+    best_plan, best_reward, history = alns.run()
+
+    return best_reward
 
 def gap_pct(reward, reward_cp_sat):
     """Ecart en % par rapport a CP-SAT (positif = moins bon que l'optimum, negatif = meilleur
@@ -65,7 +79,7 @@ def gap_pct(reward, reward_cp_sat):
 
 if __name__ == "__main__":
     agent = DDQNAgent(seed=0)
-    agent.online.load_state_dict(torch.load(f"best_ddqn_{CLASSE}.pt")) 
+    agent.online.load_state_dict(torch.load(f"best_DDQN_1_{CLASSE}.pt")) 
     agent.online.eval()
 
     rows = []   # une ligne par instance de test 
@@ -83,6 +97,7 @@ if __name__ == "__main__":
         r_greedy = evaluate_heuristic(requests, satellites, ground_stations, horizon, seed, greedy_priority_policy)
         r_fcfs = evaluate_heuristic(requests, satellites, ground_stations, horizon, seed, fcfs_policy)
         r_random = evaluate_heuristic(requests, satellites, ground_stations, horizon, seed, random_policy, is_random=True)
+        r_alns = evaluate_alns(requests, satellites, ground_stations, horizon, seed)
 
         row = {
             "id": instance_id, "seed": seed,
@@ -91,16 +106,19 @@ if __name__ == "__main__":
             "greedy_reward": r_greedy, "greedy_gap_pct": gap_pct(r_greedy, r_cp),
             "fcfs_reward": r_fcfs, "fcfs_gap_pct": gap_pct(r_fcfs, r_cp),
             "random_reward": r_random, "random_gap_pct": gap_pct(r_random, r_cp),
+            "alns_reward": r_alns,
+            "alns_gap_pct": gap_pct(r_alns, r_cp)
         }
         rows.append(row)
 
         print(f"instance {instance_id:2d} (seed={seed:4d})  CP-SAT={r_cp:7.2f}  "
               f"DDQN={r_ddqn:7.2f} ({row['ddqn_gap_pct']:+6.2f}%)  "
               f"Greedy={r_greedy:7.2f} ({row['greedy_gap_pct']:+6.2f}%)  "
-              f"FCFS={r_fcfs:7.2f} ({row['fcfs_gap_pct']:+6.2f}%)")
+              f"FCFS={r_fcfs:7.2f} ({row['fcfs_gap_pct']:+6.2f}%)"
+              f"ALNS={r_alns:7.2f} ({row['alns_gap_pct']:+6.2f}%)")
 
     # --- sauvegarde du detail par instance (Etape 3, futur Table A.1) ---
-    with open(f"detailed_results_1_{CLASSE}.csv", "w", newline="") as f:
+    with open(f"detailed_results_2_{CLASSE}.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
@@ -108,7 +126,7 @@ if __name__ == "__main__":
     # --- statistiques agregees ---
     print(f"\n=== Statistiques agregees (classe {CLASSE}, {len(rows)} instances de test) ===")
     print(f"{'Methode':<10}{'Min':>10}{'Q1':>10}{'Mediane':>10}{'Moyenne':>10}{'Q3':>10}{'Max':>10}")
-    methods = ["ddqn", "greedy", "fcfs", "random"]
+    methods = ["ddqn", "greedy", "fcfs", "random", "alns"]
     gap_values = {}
     for method in methods:
         values = np.array([r[f"{method}_gap_pct"] for r in rows])
@@ -129,7 +147,7 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid(alpha=0.3, axis="y")
     plt.tight_layout()
-    plt.savefig(f"boxplot_gap_1_{CLASSE}.png", dpi=150)
+    plt.savefig(f"boxplot_gap_2_{CLASSE}.png", dpi=150)
     plt.show()
 
     # -----------------------------------------------------------
@@ -142,11 +160,12 @@ if __name__ == "__main__":
     plt.plot(ids, [r["greedy_reward"] for r in rows], "o-", label="Greedy")
     plt.plot(ids, [r["fcfs_reward"] for r in rows], "o-", label="FCFS")
     plt.plot(ids, [r["random_reward"] for r in rows], "o-", label="Random")
+    plt.plot(ids, [r["alns_reward"] for r in rows], "o-", label="ALNS")
     plt.xlabel("Identifiant de l'instance de test")
     plt.ylabel("Recompense obtenue")
-    plt.title(f"Comparaison instance par instance -- classe {CLASSE}")
+    plt.title(f"Comparaison instance par instance - classe {CLASSE}")
     plt.legend()
     plt.grid(alpha=0.3)
     plt.tight_layout()
-    plt.savefig(f"comparison_per_instance_1_{CLASSE}.png", dpi=150)
+    plt.savefig(f"comparison_per_instance_2_{CLASSE}.png", dpi=150)
     plt.show()
